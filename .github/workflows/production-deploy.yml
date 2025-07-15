@@ -28,6 +28,10 @@ jobs:
       name: production
     steps:
       - uses: actions/checkout@v4
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
       - name: Deploy to S3 (production)
         env:
           AWS_REGION: ap-northeast-1

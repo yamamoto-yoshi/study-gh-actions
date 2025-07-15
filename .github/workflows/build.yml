@@ -18,3 +18,8 @@ jobs:
       - run: npm ci
       - name: Build app
         run: npm run build -- --mode ${{ inputs.mode }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
