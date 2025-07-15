@@ -1,0 +1,47 @@
+name: Production Deploy
+
+on:
+  pull_request_target:
+    types: [closed]
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  lint:
+    uses: ./.github/workflows/lint.yml
+
+  build:
+    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
+    needs: lint
+    uses: ./.github/workflows/build.yml
+    with:
+      mode: production
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to S3 (production)
+        env:
+          AWS_REGION: ap-northeast-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: aws s3 sync dist s3://yamamoto-yoshi-gh-actions-test-prd/ --delete
+
+  notify-success:
+    if: github.event_name == 'workflow_dispatch' && success()
+    needs: deploy
+    uses: ./.github/workflows/notify.yml
+    with:
+      message: "<@W6AK45SQK>\nEV CMS更新 本番デプロイ成功"
+
+  notify-failure:
+    if: github.event_name == 'workflow_dispatch' && failure()
+    needs: deploy
+    uses: ./.github/workflows/notify.yml
+    with:
+      message: "<@W6AK45SQK>\nEV CMS更新 本番デプロイ失敗"

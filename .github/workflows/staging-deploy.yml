@@ -1,0 +1,38 @@
+name: Staging Deploy
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  lint:
+    uses: ./.github/workflows/lint.yml
+
+  build:
+    needs: lint
+    uses: ./.github/workflows/build.yml
+    with:
+      mode: staging
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to S3 (staging)
+        env:
+          AWS_REGION: ap-northeast-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: aws s3 sync dist s3://yamamoto-yoshi-gh-actions-test-stg/ --delete
+
+  notify:
+    needs: deploy
+    uses: ./.github/workflows/notify.yml
+    with:
+      message: "<@W6AK45SQK>\nEV CMS更新 ステージングデプロイ成功"
