@@ -22,8 +22,9 @@ jobs:
       - run: npm ci
       - name: reviewdog / ESLint
         uses: reviewdog/action-eslint@2fee6dd72a5419ff4113f694e2068d2a03bb35dd # v1.33.2
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.REVIEWDOG_TOKEN }}
         with:
-          github_token: ${{ secrets.REVIEWDOG_TOKEN }}
           fail_level: "warning"
           eslint_flags: "src"
       - name: astro check
