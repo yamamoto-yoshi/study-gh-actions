@@ -33,7 +33,6 @@ jobs:
         with:
           name: dist
           path: dist
-          retention-days: 1
       - name: Deploy to S3 (production)
         env:
           AWS_REGION: ap-northeast-1
