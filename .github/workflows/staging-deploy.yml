@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
-      - master
+      - main
   workflow_dispatch:
 
 jobs:
@@ -31,8 +31,16 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: aws s3 sync dist s3://yamamoto-yoshi-gh-actions-test-stg/ --delete
 
-  notify:
+  notify-success:
+    if: github.event_name == 'workflow_dispatch' && success()
     needs: deploy
     uses: ./.github/workflows/notify.yml
     with:
-      message: "<@W6AK45SQK>\nEV CMS更新 ステージングデプロイ成功"
+      message: "<@W6AK45SQK>\nCMS更新 STGデプロイ成功"
+
+  notify-failure:
+    if: github.event_name == 'workflow_dispatch' && failure()
+    needs: deploy
+    uses: ./.github/workflows/notify.yml
+    with:
+      message: "<@W6AK45SQK>\nCMS更新 STGデプロイ失敗"

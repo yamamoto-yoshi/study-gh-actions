@@ -4,7 +4,7 @@ on:
   pull_request_target:
     types: [closed]
     branches:
-      - master
+      - main
   workflow_dispatch:
 
 jobs:
@@ -37,11 +37,11 @@ jobs:
     needs: deploy
     uses: ./.github/workflows/notify.yml
     with:
-      message: "<@W6AK45SQK>\nEV CMS更新 本番デプロイ成功"
+      message: "<@W6AK45SQK>\nCMS更新 本番デプロイ成功"
 
   notify-failure:
     if: github.event_name == 'workflow_dispatch' && failure()
     needs: deploy
     uses: ./.github/workflows/notify.yml
     with:
-      message: "<@W6AK45SQK>\nEV CMS更新 本番デプロイ失敗"
+      message: "<@W6AK45SQK>\nCMS更新 本番デプロイ失敗"
