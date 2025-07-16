@@ -46,6 +46,8 @@ jobs:
     uses: ./.github/workflows/notify.yml
     with:
       message: "<@W6AK45SQK>\nCMS更新 本番デプロイ成功"
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   notify-failure:
     if: github.event_name == 'workflow_dispatch' && failure()
@@ -53,3 +55,5 @@ jobs:
     uses: ./.github/workflows/notify.yml
     with:
       message: "<@W6AK45SQK>\nCMS更新 本番デプロイ失敗"
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
