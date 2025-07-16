@@ -208,3 +208,11 @@ import background from '../assets/background.svg';
 		}
 	}
 </style>
+
+<script>
+  const links: NodeListOf<HTMLAnchorElement> = document.querySelectorAll('#links a');
+    const news = document.querySelector('#news');
+  links.forEach(link => {
+    console.log(`Link: ${link.href}`);
+  });
+</script>
