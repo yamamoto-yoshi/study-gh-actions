@@ -9,8 +9,6 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    environment:
-      name: reviewdog
     permissions:
       contents: read
       pull-requests: write
